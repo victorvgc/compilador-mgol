@@ -5,7 +5,7 @@ fun main (args: Array<String>) {
     //Inicializa a tabela de simbolos
     val tabelaSimbolos = inicializarTabelaSimbolos()
 
-    val inputStream: InputStream = File("D:\\Documentos\\Compiladores\\compilador-mgol\\Testes\\teste.txt").inputStream()
+    val inputStream: InputStream = File("Testes\\teste.txt").inputStream()
     val inputString = inputStream.bufferedReader().use { it.readText() }
 
     val analizadorLexico = AnalizadorLexico(tabelaSimbolos, inputString)
