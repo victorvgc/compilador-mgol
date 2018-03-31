@@ -29,6 +29,7 @@ class MatrizEstados{
         set(0, Entrada.PONTO_VIGULA.index, 22)
         set(0, Entrada.ESPECIAL.index, -1)
 
+        /*
         set(1, Entrada.DIGITO.index, 2)
         set(1, Entrada.LETRA.index, -1)
         set(1, Entrada.PONTO.index, -1)
@@ -52,6 +53,7 @@ class MatrizEstados{
         set(1, Entrada.ESPACO.index, -1)
         set(1, Entrada.PONTO_VIGULA.index, -1)
         set(1, Entrada.ESPECIAL.index, -1)
+        */
 
 
         set(2, Entrada.DIGITO.index, 2)
