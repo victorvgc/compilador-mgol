@@ -58,6 +58,52 @@ class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: Stri
         return Lexema(afdLexico.ultimoEstadoAlcancado, lexema)
     }
 
+    //TODO: FAZER A FUNÇÃO QUE LEIA PELO AFD HASHMAP
+    fun getNextLexema(): Lexema {
+        val afdLexico = AFDLexico()
+
+        var saida: Int
+
+        var lexema = ""
+
+        var char: Char
+
+        do {
+            charArrayReader.mark(1)
+            char = charArrayReader.read().toChar()
+            saida = afdLexico.processar(char)
+            colunaAtual++
+
+            if (saida == Saida.IGNORAR)
+                break
+            if (saida != Saida.SEM_TRANSICAO)
+                lexema += char
+        }while (saida != Saida.SEM_TRANSICAO && saida != Saida.ERRO)
+
+        if (saida != Saida.IGNORAR) {
+            charArrayReader.reset()
+            colunaAtual--
+
+            char = charArrayReader.read().toChar()
+            if (char.toInt() == 0xFFFF && lexema.isEmpty())
+                return Lexema(14, lexema)
+            else if ((char.toInt() == 10 || char.toInt() == 13)) {
+                linhaAtual++
+                colunaAtual = 0
+            }
+            else if (char.toInt() == 9)
+                colunaAtual += 4
+            else
+                charArrayReader.reset()
+        }
+        else
+            return analizarLexema()
+
+        if (!afdLexico.isCadeiaValida())
+            return Erro(char.toString(), linhaAtual, colunaAtual)
+        return Lexema(afdLexico.ultimoEstadoAlcancado, lexema)
+    }
+
     private fun alreadyIsOnTabelaSimbolos (lexema: Lexema): Boolean {
         val token: Lexema? = tabelaSimbolos[lexema.lexema]
 

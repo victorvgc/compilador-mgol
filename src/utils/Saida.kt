@@ -7,5 +7,6 @@ class Saida{
         val ERRO = -1
         val SEM_TRANSICAO = -2
         val IGNORAR = -3
+        val ACEITO = 200
     }
 }
