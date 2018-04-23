@@ -3,8 +3,9 @@ import utils.Saida
 class AFDLexicoHashMap {
 
     private var estadoAtual: Int = 0
-    private val estadosFinais: IntArray = intArrayOf(1,2,4,7,9,10,12,14,15,16,17,18,19,20,21,22)
-    private var ultimoEstadoAlcancado : Int = -1
+    private val estadosFinais: IntArray = intArrayOf(1,2,4,7,9,10,12,13,14,15,16,17,18,19,20,21,22)
+    var ultimoEstadoAlcancado : Int = -1
+    private val afdHashMap = HashMap<String, Int>()
 
     init {
         inicializaAfd()
@@ -17,20 +18,18 @@ class AFDLexicoHashMap {
     fun processar (entrada : Char): Int {
         val chave: String = entrada.toString() + estadoAtual
 
-        if (entrada.toInt() == 0xFFFF)
-            estadoAtual = getEstado("EOF$estadoAtual")
-        else if(entrada.isDigit())
-            estadoAtual = getEstado("D$estadoAtual")
-        else if (entrada.isLetter() && estadoAtual != 2 && estadoAtual != 4)
-            estadoAtual = getEstado("L$estadoAtual")
-        else if (entrada.toInt() == 9)
-            estadoAtual = getEstado("TAB$estadoAtual")
-        else if (entrada.toInt() == 10 || entrada.toInt() == 13)
-            estadoAtual = getEstado("SALTO$estadoAtual")
-        else if (entrada.equals('"'))
-            estadoAtual = getEstado("ASPAS$estadoAtual")
-        else
-            estadoAtual = getEstado(chave)
+        estadoAtual =   if (entrada.toInt() == 0xFFFF)
+                            getEstado("EOF$estadoAtual")
+                        else if(entrada.isDigit())
+                            getEstado("D$estadoAtual")
+                        else if (entrada.isLetter() && estadoAtual != 2 && estadoAtual != 4)
+                            getEstado("L$estadoAtual")
+                        else if (entrada.toInt() == 10 || entrada.toInt() == 13)
+                            getEstado("SALTO$estadoAtual")
+                        else
+                            getEstado(chave)
+
+
 
         if (estadoAtual != -1) {
             ultimoEstadoAlcancado = estadoAtual
@@ -44,6 +43,9 @@ class AFDLexicoHashMap {
                 Saida.ERRO
             reset()
         }
+        else if (estadoAtual == 12 || estadoAtual == 13) {
+            status = Saida.IGNORAR
+        }
         else
             status = Saida.PROCESSANDO
 
@@ -52,8 +54,13 @@ class AFDLexicoHashMap {
 
     private fun getEstado (estadoEntrada : String) : Int  {
 
-        return if (afdHashMap[estadoEntrada] != null)
-            afdHashMap[estadoEntrada]!!
+        var chave = estadoEntrada
+
+        if ((estadoAtual == 8 && !estadoEntrada.get(0).equals('"')) || (estadoAtual == 11 && !estadoEntrada.get(0).equals('}')))
+            chave = "S${estadoEntrada.substring(1, estadoEntrada.length)}"
+
+        return if (afdHashMap[chave] != null)
+            afdHashMap[chave]!!
         else
             -1
     }
@@ -62,24 +69,23 @@ class AFDLexicoHashMap {
         return estadosFinais.contains(ultimoEstadoAlcancado)
     }
 
-
-    val afdHashMap = HashMap<String, Int>()
-
     private fun inicializaAfd() {
         afdHashMap["D0"] = 2
         afdHashMap["L0"] = 10
-        afdHashMap["+0"] = 1
-        afdHashMap["-0"] = 1
-        afdHashMap["*0"] = 1
-        afdHashMap["/0"] = 1
+        afdHashMap["+0"] = 19
+        afdHashMap["-0"] = 19
+        afdHashMap["*0"] = 19
+        afdHashMap["/0"] = 19
         afdHashMap[">0"] = 17
         afdHashMap["<0"] = 15
         afdHashMap["=0"] = 16
-        afdHashMap["ASPAS0"] = 8
+        afdHashMap["\t0"] = 13
+        afdHashMap["SALTO0"] = 13
+        afdHashMap["\"0"] = 8
         afdHashMap["{0"] = 11
         afdHashMap["EOF0"] = 14
         afdHashMap["(0"] = 20
-        afdHashMap[")"] = 21
+        afdHashMap[")0"] = 21
         afdHashMap[" 0"] = 13
         afdHashMap[";0"] = 22
 
@@ -111,9 +117,9 @@ class AFDLexicoHashMap {
         afdHashMap[">8"] = 8
         afdHashMap["<8"] = 8
         afdHashMap["=8"] = 8
-        afdHashMap["TAB8"] = 8
+        afdHashMap["\t8"] = 8
         afdHashMap["SALTO8"] = 8
-        afdHashMap["ASPAS8"] = 8
+        afdHashMap["\"8"] = 9
         afdHashMap["{8"] = 8
         afdHashMap["}8"] = 8
         afdHashMap["_8"] = 8
@@ -122,6 +128,7 @@ class AFDLexicoHashMap {
         afdHashMap[")8"] = 8
         afdHashMap[" 8"] = 8
         afdHashMap[";8"] = 8
+        afdHashMap["S8"] = 8
 
         afdHashMap["D10"] = 10
         afdHashMap["L10"] = 10
@@ -137,9 +144,9 @@ class AFDLexicoHashMap {
         afdHashMap[">11"] = 11
         afdHashMap["<11"] = 11
         afdHashMap["=11"] = 11
-        afdHashMap["TAB11"] = 11
+        afdHashMap["\t11"] = 11
         afdHashMap["SALTO11"] = 11
-        afdHashMap["ASPAS11"] = 11
+        afdHashMap["\"11"] = 11
         afdHashMap["{11"] = 11
         afdHashMap["}11"] = 12
         afdHashMap["_11"] = 11
@@ -148,6 +155,7 @@ class AFDLexicoHashMap {
         afdHashMap[")11"] = 11
         afdHashMap[" 11"] = 11
         afdHashMap[";11"] = 11
+        afdHashMap["S11"] = 11
 
         afdHashMap["-15"] = 18
         afdHashMap[">15"] = 16

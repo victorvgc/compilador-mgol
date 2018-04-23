@@ -11,7 +11,7 @@ fun main (args: Array<String>) {
     val analizadorLexico = AnalizadorLexico(tabelaSimbolos, inputString)
 
     do {
-        val lexema = analizadorLexico.analizar()
+        val lexema = analizadorLexico.getNextLexema()
         println(lexema.toString())
     }while (!lexema.token.equals("EOF") && !lexema.token.equals("ERRO"))
 }

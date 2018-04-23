@@ -13,7 +13,7 @@ class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: Stri
     var linhaAtual = 1
     var colunaAtual = 1
 
-    fun analizarLexema(): Lexema{
+    private fun analizarLexema(): Lexema{
         val afdLexico = AFDLexico()
 
         var saida: Int
@@ -58,9 +58,8 @@ class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: Stri
         return Lexema(afdLexico.ultimoEstadoAlcancado, lexema)
     }
 
-    //TODO: FAZER A FUNÇÃO QUE LEIA PELO AFD HASHMAP
-    fun getNextLexema(): Lexema {
-        val afdLexico = AFDLexico()
+    fun nextLexema(): Lexema {
+        val afdLexico = AFDLexicoHashMap()
 
         var saida: Int
 
@@ -76,9 +75,9 @@ class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: Stri
 
             if (saida == Saida.IGNORAR)
                 break
-            if (saida != Saida.SEM_TRANSICAO)
+            if (saida != Saida.SEM_TRANSICAO  && saida != Saida.ACEITO)
                 lexema += char
-        }while (saida != Saida.SEM_TRANSICAO && saida != Saida.ERRO)
+        }while (saida == Saida.PROCESSANDO)
 
         if (saida != Saida.IGNORAR) {
             charArrayReader.reset()
@@ -97,9 +96,9 @@ class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: Stri
                 charArrayReader.reset()
         }
         else
-            return analizarLexema()
+            return nextLexema()
 
-        if (!afdLexico.isCadeiaValida())
+        if (saida != Saida.ACEITO)
             return Erro(char.toString(), linhaAtual, colunaAtual)
         return Lexema(afdLexico.ultimoEstadoAlcancado, lexema)
     }
@@ -110,7 +109,7 @@ class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: Stri
         return token != null
     }
 
-    fun atualizarTabelaSimbolos(lexema: Lexema): Lexema {
+    private fun atualizarTabelaSimbolos(lexema: Lexema): Lexema {
         if (!alreadyIsOnTabelaSimbolos(lexema)) {
             tabelaSimbolos[lexema.lexema] = lexema
             return lexema
@@ -124,6 +123,11 @@ class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: Stri
 
     fun analizar(): Lexema {
         val lexema = analizarLexema()
+        return atualizarTabelaSimbolos(lexema)
+    }
+
+    fun getNextLexema(): Lexema {
+        val lexema = nextLexema()
         return atualizarTabelaSimbolos(lexema)
     }
 }
