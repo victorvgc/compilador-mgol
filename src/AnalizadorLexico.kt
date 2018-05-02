@@ -110,15 +110,17 @@ class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: Stri
     }
 
     private fun atualizarTabelaSimbolos(lexema: Lexema): Lexema {
-        if (!alreadyIsOnTabelaSimbolos(lexema)) {
+
+        if (!alreadyIsOnTabelaSimbolos(lexema) && lexema.token.equals("id"))
             tabelaSimbolos[lexema.lexema] = lexema
-            return lexema
-        }
-        else {
+
+        else if (lexema.token.equals("id")) {
             tabelaSimbolos[lexema.lexema]!!.update(lexema)
 
             return tabelaSimbolos[lexema.lexema]!!
         }
+
+        return lexema
     }
 
     fun analizar(): Lexema {
