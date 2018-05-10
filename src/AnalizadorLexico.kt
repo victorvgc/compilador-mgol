@@ -41,12 +41,6 @@ class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: Stri
             char = charArrayReader.read().toChar()
             if (char.toInt() == 0xFFFF && lexema.isEmpty())
                 return Lexema(14, lexema)
-            else if ((char.toInt() == 10 || char.toInt() == 13)) {
-                linhaAtual++
-                colunaAtual = 0
-            }
-            else if (char.toInt() == 9)
-                colunaAtual += 4
             else
                 charArrayReader.reset()
         }
@@ -73,6 +67,11 @@ class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: Stri
             saida = afdLexico.processar(char)
             colunaAtual++
 
+            if ((char.toInt() == 10)) {
+                linhaAtual++
+                colunaAtual = 1
+            }
+
             if (saida == Saida.IGNORAR)
                 break
             if (saida != Saida.SEM_TRANSICAO  && saida != Saida.ACEITO)
@@ -86,12 +85,6 @@ class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: Stri
             char = charArrayReader.read().toChar()
             if (char.toInt() == 0xFFFF && lexema.isEmpty())
                 return Lexema(14, lexema)
-            else if ((char.toInt() == 10 || char.toInt() == 13)) {
-                linhaAtual++
-                colunaAtual = 0
-            }
-            else if (char.toInt() == 9)
-                colunaAtual += 4
             else
                 charArrayReader.reset()
         }
