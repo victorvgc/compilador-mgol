@@ -30,7 +30,7 @@ open class Lexema (estadoFinal: Int, open var lexema: String) {
     var tipo: String = "indefinido"
 
     override fun toString (): String {
-        return "Token: " + token + " | Lexema: " + lexema + " | Tipo: " + tipo
+        return "Token: $token | Lexema: $lexema | Tipo: $tipo"
     }
 
     fun update(lexema: Lexema) {
