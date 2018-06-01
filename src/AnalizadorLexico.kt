@@ -108,7 +108,7 @@ class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: Stri
             tabelaSimbolos[lexema.lexema] = lexema
 
         else if (lexema.token.equals("id")) {
-            tabelaSimbolos[lexema.lexema]!!.update(lexema)
+            //tabelaSimbolos[lexema.lexema]!!.update(lexema)
 
             return tabelaSimbolos[lexema.lexema]!!
         }

@@ -22,14 +22,16 @@ class AFDLexicoHashMap {
                             getEstado("EOF$estadoAtual")
                         else if(entrada.isDigit())
                             getEstado("D$estadoAtual")
-                        else if (entrada.isLetter() && estadoAtual != 2 && estadoAtual != 4)
-                            getEstado("L$estadoAtual")
+                        else if (entrada.isLetter()) {
+                            if (estadoAtual != 2 && estadoAtual != 4)
+                                getEstado("L$estadoAtual")
+                            else
+                                getEstado(entrada.toString().toUpperCase() + estadoAtual)
+                        }
                         else if (entrada.toInt() == 10 || entrada.toInt() == 13)
                             getEstado("SALTO$estadoAtual")
                         else
                             getEstado(chave)
-
-
 
         if (estadoAtual != -1) {
             ultimoEstadoAlcancado = estadoAtual
@@ -93,6 +95,7 @@ class AFDLexicoHashMap {
 
         afdHashMap["D2"] = 2
         afdHashMap[".2"] = 3
+        afdHashMap["E2"] = 5
 
         afdHashMap["D3"] = 4
 
