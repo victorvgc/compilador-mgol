@@ -15,10 +15,7 @@ fun main (args: Array<String>) {
 
     val analisadorSintatico = AnalisadorSintatico(analizadorLexico)
 
-    do {
-        val lexema = analizadorLexico.getNextLexema()
-        println(lexema.toString())
-    }while (!lexema.token.equals("eof") && !lexema.token.equals("ERRO"))
+    analisadorSintatico.analisarSintaxe()
 }
 
 /**
@@ -38,7 +35,7 @@ fun inicializarTabelaSimbolos(): HashMap<String, Lexema> {
     tabelaSimbolos["senao"] = object: Lexema("senao", "senao"){}
     tabelaSimbolos["fimse"] = object: Lexema("fimse", "fimse"){}
     tabelaSimbolos["fim"] = object: Lexema("fim", "fim"){}
-    tabelaSimbolos["inteiro"] = object: Lexema("inteiro", "inteiro"){}
+    tabelaSimbolos["int"] = object: Lexema("int", "int"){}
     tabelaSimbolos["real"] = object: Lexema("real", "real"){}
     tabelaSimbolos["lit"] = object: Lexema("lit", "lit"){}
 

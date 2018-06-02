@@ -54,7 +54,7 @@ class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: Stri
         return Lexema(afdLexico.ultimoEstadoAlcancado, lexema)
     }
 
-    fun nextLexema(): Lexema {
+    private fun nextLexema(): Lexema {
         val afdLexico = AFDLexicoHashMap()
 
         var saida: Int

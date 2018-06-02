@@ -11,15 +11,65 @@ class AnalisadorSintatico (val analisadorLexico: AnalizadorLexico) {
 
     private val pilha: Stack<String> = Stack()
     private val tabelaTransicoes: HashMap<String, String> = HashMap()
+    private val tabelaReducoes: HashMap<String, Producao> = HashMap()
 
     init {
         iniciarTabelaTransicoes()
+        iniciarTabelaReducoes()
     }
 
     fun analisarSintaxe() {
-        while (true) {
+        var entrada = analisadorLexico.getNextLexema().token
 
+        pilha.push("0")
+        while (true) {
+            val action = action(pilha.peek().toInt(), entrada)
+            if (action.startsWith("ERRO")) {
+                println(action)
+                break
+            }
+            else if (action.equals("ACC")) {
+                println("\n-----------  Accepted!  -----------\n")
+                break
+            }
+            else if (action[0].equals('S')) {
+                shift(action.substring(1), entrada)
+                entrada = analisadorLexico.getNextLexema().token
+            }
+            else if (action[0].equals('R')) {
+                reduce(action.substring(1))
+            }
         }
+    }
+
+    private fun shift(estado: String, entrada: String) {
+        pilha.push(entrada)
+        pilha.push(estado)
+    }
+
+    private fun reduce(numProducao: String) {
+        val producao = tabelaReducoes[numProducao]!!
+
+        producao.argumentos.reversed().forEach{
+            pilha.pop()
+            pilha.pop()
+        }
+
+        goto(producao.reducao)
+        println(producao.toString())
+    }
+
+    private fun goto(reducao: String) {
+        val action = action(pilha.peek().toInt(), reducao)
+
+        shift(action.substring(1), reducao)
+    }
+
+    private fun action(estado: Int, entrada: String) : String {
+        return if (tabelaTransicoes["$estado$entrada"] != null)
+            tabelaTransicoes["$estado$entrada"]!!
+        else
+            "ERRO $estado + $entrada"
     }
 
     private fun iniciarTabelaTransicoes() {
@@ -31,7 +81,7 @@ class AnalisadorSintatico (val analisadorLexico: AnalizadorLexico) {
         inputString.reader().forEachLine {
             val input = it.split(",")
 
-            var estado = input[0]
+            val estado = input[0]
             var coluna = -1
 
             input.forEach {
@@ -47,8 +97,16 @@ class AnalisadorSintatico (val analisadorLexico: AnalizadorLexico) {
 
             linha++
         }
-
-
     }
 
+    private fun iniciarTabelaReducoes() {
+        val inputStream: InputStream = File("Analisador_Sintatico_Utils\\tabela_producoes.csv").inputStream()
+        val inputString = inputStream.bufferedReader().use { it.readText() }
+
+        inputString.reader().forEachLine {
+            val input = it.split(",")
+
+            tabelaReducoes[input[0]] = Producao(input[1], input[2].split(" "))
+        }
+    }
 }

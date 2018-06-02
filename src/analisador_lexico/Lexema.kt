@@ -14,7 +14,7 @@ open class Lexema (estadoFinal: Int, open var lexema: String) {
             2, 4, 7 -> "num"
             9 -> "literal"
             10 -> "id"
-            14 -> "eof"
+            14 -> "$"
             15, 16, 17 -> "opr"
             18 -> "rcb"
             20 -> "AB_P"
