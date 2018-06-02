@@ -1,4 +1,6 @@
-import utils.Saida
+package analisador_lexico
+
+import analisador_lexico.utils.Saida
 import java.io.CharArrayReader
 
 class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: String){
@@ -13,7 +15,7 @@ class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: Stri
     var linhaAtual = 1
     var colunaAtual = 1
 
-    private fun analizarLexema(): Lexema{
+    private fun analizarLexema(): Lexema {
         val afdLexico = AFDLexico()
 
         var saida: Int
@@ -48,7 +50,7 @@ class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: Stri
             return analizarLexema()
 
         if (!afdLexico.isCadeiaValida())
-            return Erro(char.toString(), linhaAtual, colunaAtual)
+            return ErroLexico(char.toString(), linhaAtual, colunaAtual)
         return Lexema(afdLexico.ultimoEstadoAlcancado, lexema)
     }
 
@@ -92,11 +94,11 @@ class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: Stri
             return nextLexema()
 
         if (saida != Saida.ACEITO)
-            return Erro(char.toString(), linhaAtual, colunaAtual)
+            return ErroLexico(char.toString(), linhaAtual, colunaAtual)
         return Lexema(afdLexico.ultimoEstadoAlcancado, lexema)
     }
 
-    private fun alreadyIsOnTabelaSimbolos (lexema: Lexema): Boolean {
+    private fun alreadyOnTabelaSimbolos (lexema: Lexema): Boolean {
         val token: Lexema? = tabelaSimbolos[lexema.lexema]
 
         return token != null
@@ -104,7 +106,7 @@ class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: Stri
 
     private fun atualizarTabelaSimbolos(lexema: Lexema): Lexema {
 
-        if (!alreadyIsOnTabelaSimbolos(lexema) && lexema.token.equals("id"))
+        if (!alreadyOnTabelaSimbolos(lexema) && lexema.token.equals("id"))
             tabelaSimbolos[lexema.lexema] = lexema
 
         else if (lexema.token.equals("id")) {

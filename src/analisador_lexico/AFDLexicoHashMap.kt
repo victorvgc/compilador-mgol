@@ -1,4 +1,6 @@
-import utils.Saida
+package analisador_lexico
+
+import analisador_lexico.utils.Saida
 
 class AFDLexicoHashMap {
 

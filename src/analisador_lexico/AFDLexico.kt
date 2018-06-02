@@ -1,6 +1,8 @@
-import utils.Entrada
-import utils.MatrizEstados
-import utils.Saida
+package analisador_lexico
+
+import analisador_lexico.utils.Entrada
+import analisador_lexico.utils.MatrizEstados
+import analisador_lexico.utils.Saida
 
 class AFDLexico {
     private var estado: Int = 0

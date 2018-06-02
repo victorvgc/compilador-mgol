@@ -1,4 +1,4 @@
-package utils
+package analisador_lexico.utils
 
 class MatrizEstados{
 

@@ -1,4 +1,4 @@
-package utils
+package analisador_lexico.utils
 
 enum class Entrada(val character: String, val index: Int) {
     DIGITO("a-z | A-Z",0),
