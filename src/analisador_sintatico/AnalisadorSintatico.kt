@@ -19,13 +19,13 @@ class AnalisadorSintatico (val analisadorLexico: AnalizadorLexico) {
     }
 
     fun analisarSintaxe() {
-        var entrada = analisadorLexico.getNextLexema().token
+        var entrada = analisadorLexico.getNextLexema()
 
         pilha.push("0")
         while (true) {
-            val action = action(pilha.peek().toInt(), entrada)
+            val action = action(pilha.peek().toInt(), entrada.token)
             if (action.startsWith("ERRO")) {
-                println(action)
+                println(ErroSintatico(action.split(" ")[1], entrada, analisadorLexico.getLinhaColuna()))
                 break
             }
             else if (action.equals("ACC")) {
@@ -33,8 +33,8 @@ class AnalisadorSintatico (val analisadorLexico: AnalizadorLexico) {
                 break
             }
             else if (action[0].equals('S')) {
-                shift(action.substring(1), entrada)
-                entrada = analisadorLexico.getNextLexema().token
+                shift(action.substring(1), entrada.token)
+                entrada = analisadorLexico.getNextLexema()
             }
             else if (action[0].equals('R')) {
                 reduce(action.substring(1))
@@ -69,7 +69,7 @@ class AnalisadorSintatico (val analisadorLexico: AnalizadorLexico) {
         return if (tabelaTransicoes["$estado$entrada"] != null)
             tabelaTransicoes["$estado$entrada"]!!
         else
-            "ERRO $estado + $entrada"
+            "ERRO $estado"
     }
 
     private fun iniciarTabelaTransicoes() {
