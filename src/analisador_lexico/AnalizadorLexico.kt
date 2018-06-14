@@ -67,7 +67,11 @@ class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: Stri
             charArrayReader.mark(1)
             char = charArrayReader.read().toChar()
             saida = afdLexico.processar(char)
-            colunaAtual++
+
+            if (char.toInt() == 9)
+                colunaAtual += 4
+            else
+                colunaAtual++
 
             if ((char.toInt() == 10)) {
                 linhaAtual++
@@ -126,5 +130,9 @@ class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: Stri
     fun getNextLexema(): Lexema {
         val lexema = nextLexema()
         return atualizarTabelaSimbolos(lexema)
+    }
+
+    fun getLinhaColuna(): String {
+        return "Linha: $linhaAtual. Coluna: $colunaAtual"
     }
 }
