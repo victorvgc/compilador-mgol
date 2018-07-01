@@ -11,10 +11,13 @@ class AnalisadorSemantico (val programaObjeto : File, val tabelaSimbolos : HashM
     private var programBodyBuffer = StringBuilder()
     private var programHeadBuffer = StringBuilder()
 
+    private var tab = 0
+
     init {
         programHeadBuffer.append("#include <stdio.h>\n")
         programHeadBuffer.append("typedef char lit[256];\n")
-        programHeadBuffer.append("void main(void) {\n")
+        programHeadBuffer.append("\nvoid main(void) {\n")
+        tab++
     }
 
     fun analisarSemantica (reducao : String, params : HashMap<String, Lexema>) : Lexema {
@@ -30,6 +33,7 @@ class AnalisadorSemantico (val programaObjeto : File, val tabelaSimbolos : HashM
 
                 atualizarTabelaSibolos(params["id"]!!)
 
+                programBodyBuffer.append(tabular())
                 programBodyBuffer.append("${params["TIPO"]!!.tipo} ${params["id"]!!.lexema};\n")
 
                 Lexema(reducao, reducao)
@@ -45,6 +49,7 @@ class AnalisadorSemantico (val programaObjeto : File, val tabelaSimbolos : HashM
                 val key = params.keys
 
                 if (key.contains("id")) {
+                    programBodyBuffer.append(tabular())
                     when (params["id"]!!.tipo) {
                         "lit" -> programBodyBuffer.append("scanf(\"%s\", ${params["id"]!!.lexema});\n")
                         "int" -> programBodyBuffer.append("scanf(\"%d\", &${params["id"]!!.lexema});\n")
@@ -52,8 +57,10 @@ class AnalisadorSemantico (val programaObjeto : File, val tabelaSimbolos : HashM
                         else -> Lexema("ERRO SMT", "Variavel não declarada")
                     }
                 }
-                else
-                    programBodyBuffer.append("printf(${params["ARG"]!!.lexema})\n")
+                else {
+                    programBodyBuffer.append(tabular())
+                    programBodyBuffer.append("printf(${params["ARG"]!!.lexema});\n")
+                }
 
                 Lexema(reducao, reducao)
             }
@@ -75,11 +82,12 @@ class AnalisadorSemantico (val programaObjeto : File, val tabelaSimbolos : HashM
             "CMD" -> {
                 if (isAlreadyOnTabelaSimbolos(params["id"]!!)) {
                     if (params["id"]!!.tipo == params["LD"]!!.tipo) {
+                        programBodyBuffer.append(tabular())
                         programBodyBuffer.append("${params["id"]!!.lexema} ${params["rcb"]!!.tipo} ${params["LD"]!!.lexema};\n")
                         Lexema(reducao, reducao)
                     }
                     else
-                        Lexema("ERRO SMT", "Tipo da variavel de atribuição incompatível")
+                        Lexema("ERRO SMT", "Atribuição incompatível")
                 }
                 else
                     Lexema("ERRO SMT", "Variavel não declarada")
@@ -93,8 +101,11 @@ class AnalisadorSemantico (val programaObjeto : File, val tabelaSimbolos : HashM
                     val oprd2 = params["OPRD2"]!!
 
                     if (oprd1.tipo == oprd2.tipo && !oprd1.tipo.equals("lit")) {
+                        tempVarBuffer.append("\t")
                         tempVarBuffer.append("${oprd1.tipo} t${tempCount};\n")
-                        programBodyBuffer.append("t${tempCount} = ${oprd1.lexema} ${params["opm"]!!.tipo} ${oprd2.lexema}\n")
+
+                        programBodyBuffer.append(tabular())
+                        programBodyBuffer.append("t${tempCount} = ${oprd1.lexema} ${params["opm"]!!.tipo} ${oprd2.lexema};\n")
 
                         tempCount++
 
@@ -121,13 +132,17 @@ class AnalisadorSemantico (val programaObjeto : File, val tabelaSimbolos : HashM
             }
 
             "COND" -> {
-                programBodyBuffer.append("}")
+                tab--
+                programBodyBuffer.append(tabular())
+                programBodyBuffer.append("}\n")
 
                 Lexema(reducao, reducao)
             }
 
             "CABECALHO" -> {
-                programBodyBuffer.append("if (${params["EXP_R"]!!.lexema}) {")
+                programBodyBuffer.append(tabular())
+                programBodyBuffer.append("if (${params["EXP_R"]!!.lexema}) {\n")
+                tab++
 
                 Lexema(reducao, reducao)
             }
@@ -137,8 +152,11 @@ class AnalisadorSemantico (val programaObjeto : File, val tabelaSimbolos : HashM
                 val oprd2 = params["OPRD2"]!!
 
                 if (oprd1.tipo == oprd2.tipo && !oprd1.tipo.equals("lit")) {
+                    tempVarBuffer.append("\t")
                     tempVarBuffer.append("${oprd1.tipo} t${tempCount};\n")
-                    programBodyBuffer.append("t${tempCount} = ${oprd1.lexema}${params["opr"]!!.tipo}${oprd2.lexema}\n")
+
+                    programBodyBuffer.append(tabular())
+                    programBodyBuffer.append("t${tempCount} = ${oprd1.lexema} ${params["opr"]!!.tipo} ${oprd2.lexema};\n")
 
                     tempCount++
 
@@ -167,13 +185,27 @@ class AnalisadorSemantico (val programaObjeto : File, val tabelaSimbolos : HashM
         val programBuilder = StringBuilder()
 
         programBuilder.append(programHeadBuffer)
-        programBuilder.append("/*----Variaveis Temporarias----*/\n")
-        programBuilder.append(tempVarBuffer)
-        programBuilder.append("/*-----------------------------*/\n")
+
+        if (!tempVarBuffer.isBlank()) {
+            programBuilder.append("/*----Variaveis Temporarias----*/\n")
+            programBuilder.append(tempVarBuffer)
+            programBuilder.append("/*-----------------------------*/\n")
+        }
         programBuilder.append(programBodyBuffer)
         programBuilder.append("}")
 
         programaObjeto.writeText(programBuilder.toString())
     }
 
+    private fun tabular () : String {
+        var i = 0
+        var tabulacao = ""
+        while (i < tab) {
+            i++
+
+            tabulacao += "\t"
+        }
+
+        return tabulacao
+    }
 }

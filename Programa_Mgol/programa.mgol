@@ -6,7 +6,7 @@ inicio
 		C real;
 		testeID lit;
 	varfim;
-	escreva "Digite B";
+	escreva "Digite B:";
 	leia B;
 	escreva "Digite A:";
 	leia A;
@@ -29,8 +29,4 @@ inicio
 	escreva C;
 	escreva "\n";
 	escreva A;
-
-	leia testeID;
-
-	escreva testeID;
 fim

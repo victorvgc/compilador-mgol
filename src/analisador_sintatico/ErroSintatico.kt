@@ -31,6 +31,6 @@ class ErroSintatico (estadoErro: String, val simboloErro: Lexema, val linhaColun
     }
 
     override fun toString(): String {
-        return "Erro. Simbolo esperado: $simboloEsperado. Símbolo encontrado: '${simboloErro.lexema}'. $linhaColuna."
+        return "Erro Sintático. Simbolo esperado: $simboloEsperado. Símbolo encontrado: '${simboloErro.lexema}'. $linhaColuna."
     }
 }

@@ -41,7 +41,7 @@ class AnalisadorSintatico (val analisadorLexico: AnalizadorLexico, val analisado
                 break
             }
             else if (action.equals("ACC")) {
-                println("\n-----------  Accepted! :D -----------\n")
+                println("\n-----------  Build Successful! :D -----------\n")
                 break
             }
             else if (action[0].equals('S')) {
