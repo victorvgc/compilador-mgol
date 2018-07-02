@@ -2,7 +2,6 @@ package analisador_semantico
 
 import analisador_lexico.Lexema
 import java.io.File
-import java.io.FileWriter
 
 class AnalisadorSemantico (val programaObjeto : File, val tabelaSimbolos : HashMap<String, Lexema>) {
 
@@ -51,18 +50,26 @@ class AnalisadorSemantico (val programaObjeto : File, val tabelaSimbolos : HashM
                 if (key.contains("id")) {
                     programBodyBuffer.append(tabular())
                     when (params["id"]!!.tipo) {
-                        "lit" -> programBodyBuffer.append("scanf(\"%s\", ${params["id"]!!.lexema});\n")
-                        "int" -> programBodyBuffer.append("scanf(\"%d\", &${params["id"]!!.lexema});\n")
-                        "double" -> programBodyBuffer.append("scanf(\"%lf\", &${params["id"]!!.lexema});\n")
+                        "lit" -> {
+                            programBodyBuffer.append("scanf(\"%s\", ${params["id"]!!.lexema});\n")
+                            Lexema(reducao, reducao)
+                        }
+                        "int" -> {
+                            programBodyBuffer.append("scanf(\"%d\", &${params["id"]!!.lexema});\n")
+                            Lexema(reducao, reducao)
+                        }
+                        "double" -> {
+                            programBodyBuffer.append("scanf(\"%lf\", &${params["id"]!!.lexema});\n")
+                            Lexema(reducao, reducao)
+                        }
                         else -> Lexema("ERRO SMT", "Variavel não declarada")
                     }
                 }
                 else {
                     programBodyBuffer.append(tabular())
                     programBodyBuffer.append("printf(${params["ARG"]!!.lexema});\n")
+                    Lexema(reducao, reducao)
                 }
-
-                Lexema(reducao, reducao)
             }
 
             "ARG" -> {
@@ -176,9 +183,9 @@ class AnalisadorSemantico (val programaObjeto : File, val tabelaSimbolos : HashM
     }
 
     private fun isAlreadyOnTabelaSimbolos (lexema: Lexema): Boolean {
-        val token: Lexema? = tabelaSimbolos[lexema.lexema]
+        val token: Lexema = tabelaSimbolos[lexema.lexema]!!
 
-        return token != null
+        return !token.tipo.equals("indefinido")
     }
 
     fun buildProgram() {
@@ -191,6 +198,7 @@ class AnalisadorSemantico (val programaObjeto : File, val tabelaSimbolos : HashM
             programBuilder.append(tempVarBuffer)
             programBuilder.append("/*-----------------------------*/\n")
         }
+
         programBuilder.append(programBodyBuffer)
         programBuilder.append("}")
 

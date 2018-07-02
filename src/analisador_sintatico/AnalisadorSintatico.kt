@@ -28,7 +28,7 @@ class AnalisadorSintatico (val analisadorLexico: AnalizadorLexico, val analisado
         pilhaDeEstados.push("0")
         while (true) {
             if (!pilhaSemantica.empty() && pilhaSemantica.peek().token.equals("ERRO SMT")) {
-                println(ErroSemantico(pilhaSemantica.peek().lexema, analisadorLexico.getLinhaColuna()).toString())
+                println(ErroSemantico(pilhaSemantica.peek().lexema))
                 break
             }
 

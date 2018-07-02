@@ -4,13 +4,12 @@ inicio
 		B int;
 		D int;
 		C real;
-		testeID lit;
 	varfim;
 	escreva "Digite B:";
 	leia B;
 	escreva "Digite A:";
 	leia A;
-	se(B>2)
+	se(B2>2)
 	entao
 		se(B<=4)
 		entao
