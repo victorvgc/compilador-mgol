@@ -102,20 +102,18 @@ class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: Stri
         return Lexema(afdLexico.ultimoEstadoAlcancado, lexema)
     }
 
-    private fun alreadyOnTabelaSimbolos (lexema: Lexema): Boolean {
+    private fun isAlreadyOnTabelaSimbolos (lexema: Lexema): Boolean {
         val token: Lexema? = tabelaSimbolos[lexema.lexema]
 
         return token != null
     }
 
-    private fun atualizarTabelaSimbolos(lexema: Lexema): Lexema {
+    private fun adicionarNaTabelaSimbolos(lexema: Lexema): Lexema {
 
-        if (!alreadyOnTabelaSimbolos(lexema) && lexema.token.equals("id"))
+        if (!isAlreadyOnTabelaSimbolos(lexema) && lexema.token.equals("id"))
             tabelaSimbolos[lexema.lexema] = lexema
 
         else if (lexema.token.equals("id")) {
-            //tabelaSimbolos[lexema.lexema]!!.update(lexema)
-
             return tabelaSimbolos[lexema.lexema]!!
         }
 
@@ -124,15 +122,19 @@ class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: Stri
 
     fun analizar(): Lexema {
         val lexema = analizarLexema()
-        return atualizarTabelaSimbolos(lexema)
+        return adicionarNaTabelaSimbolos(lexema)
     }
 
     fun getNextLexema(): Lexema {
         val lexema = nextLexema()
-        return atualizarTabelaSimbolos(lexema)
+        return adicionarNaTabelaSimbolos(lexema)
     }
 
     fun getLinhaColuna(): String {
         return "Linha: $linhaAtual. Coluna: $colunaAtual"
+    }
+
+    fun getLinha(): Int {
+        return linhaAtual
     }
 }

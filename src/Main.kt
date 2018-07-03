@@ -1,5 +1,6 @@
 import analisador_lexico.AnalizadorLexico
 import analisador_lexico.Lexema
+import analisador_semantico.AnalisadorSemantico
 import analisador_sintatico.AnalisadorSintatico
 import java.io.File
 import java.io.InputStream
@@ -13,9 +14,19 @@ fun main (args: Array<String>) {
 
     val analizadorLexico = AnalizadorLexico(tabelaSimbolos, inputString)
 
-    val analisadorSintatico = AnalisadorSintatico(analizadorLexico)
+    val outputFile = File("Programa_C\\programa_objeto.c")
 
-    analisadorSintatico.analisarSintaxe()
+    if (outputFile.exists())
+        outputFile.delete()
+
+    outputFile.createNewFile()
+
+    val analisadorSemantico = AnalisadorSemantico(outputFile, tabelaSimbolos)
+
+    val analisadorSintatico = AnalisadorSintatico(analizadorLexico, analisadorSemantico)
+
+    if (analisadorSintatico.analisarSintaxe())
+        analisadorSemantico.buildProgram()
 }
 
 /**
@@ -35,9 +46,9 @@ fun inicializarTabelaSimbolos(): HashMap<String, Lexema> {
     tabelaSimbolos["senao"] = object: Lexema("senao", "senao"){}
     tabelaSimbolos["fimse"] = object: Lexema("fimse", "fimse"){}
     tabelaSimbolos["fim"] = object: Lexema("fim", "fim"){}
-    tabelaSimbolos["int"] = object: Lexema("int", "int"){}
-    tabelaSimbolos["real"] = object: Lexema("real", "real"){}
-    tabelaSimbolos["lit"] = object: Lexema("lit", "lit"){}
+    tabelaSimbolos["int"] = object: Lexema("int", "int", "int"){}
+    tabelaSimbolos["real"] = object: Lexema("real", "real", "double"){}
+    tabelaSimbolos["lit"] = object: Lexema("lit", "lit", "lit"){}
 
     return tabelaSimbolos
 }
