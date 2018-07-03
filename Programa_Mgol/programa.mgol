@@ -9,7 +9,7 @@ inicio
 	leia B;
 	escreva "Digite A:";
 	leia A;
-	se(B2>2)
+	se(B>2)
 	entao
 		se(B<=4)
 		entao
@@ -18,7 +18,7 @@ inicio
 	fimse
 	B<-B+1;
 	B<-B+2;
-	B<-B+3;
+	B<-B+3.0;
 	D<-B;
 	C<-5.0;
 	A<-10 * 2;

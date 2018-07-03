@@ -133,4 +133,8 @@ class AnalizadorLexico (val tabelaSimbolos: HashMap<String, Lexema>, input: Stri
     fun getLinhaColuna(): String {
         return "Linha: $linhaAtual. Coluna: $colunaAtual"
     }
+
+    fun getLinha(): Int {
+        return linhaAtual
+    }
 }

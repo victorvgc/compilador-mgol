@@ -22,14 +22,14 @@ class AnalisadorSintatico (val analisadorLexico: AnalizadorLexico, val analisado
         iniciarTabelaReducoes()
     }
 
-    fun analisarSintaxe() {
+    fun analisarSintaxe() : Boolean {
         var entrada = analisadorLexico.getNextLexema()
 
         pilhaDeEstados.push("0")
         while (true) {
             if (!pilhaSemantica.empty() && pilhaSemantica.peek().token.equals("ERRO SMT")) {
-                println(ErroSemantico(pilhaSemantica.peek().lexema))
-                break
+                println(ErroSemantico(pilhaSemantica.peek().lexema,  analisadorLexico.getLinha()))
+                return false
             }
 
             val action = action(pilhaDeEstados.peek().toInt(), entrada)
@@ -38,11 +38,11 @@ class AnalisadorSintatico (val analisadorLexico: AnalizadorLexico, val analisado
                     println(ErroSintatico(action.split(" ")[1], entrada, analisadorLexico.getLinhaColuna()))
                 else
                     println("Erro desconhecido :'(")
-                break
+                return false
             }
             else if (action.equals("ACC")) {
                 println("\n-----------  Build Successful! :D -----------\n")
-                break
+                return true
             }
             else if (action[0].equals('S')) {
                 shift(action.substring(1), entrada)

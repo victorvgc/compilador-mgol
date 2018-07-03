@@ -25,9 +25,8 @@ fun main (args: Array<String>) {
 
     val analisadorSintatico = AnalisadorSintatico(analizadorLexico, analisadorSemantico)
 
-    analisadorSintatico.analisarSintaxe()
-
-    analisadorSemantico.buildProgram()
+    if (analisadorSintatico.analisarSintaxe())
+        analisadorSemantico.buildProgram()
 }
 
 /**
