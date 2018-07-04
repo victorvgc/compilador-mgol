@@ -47,7 +47,7 @@ fun inicializarTabelaSimbolos(): HashMap<String, Lexema> {
     tabelaSimbolos["fimse"] = object: Lexema("fimse", "fimse"){}
     tabelaSimbolos["fim"] = object: Lexema("fim", "fim"){}
     tabelaSimbolos["int"] = object: Lexema("int", "int", "int"){}
-    tabelaSimbolos["real"] = object: Lexema("real", "real", "double"){}
+    tabelaSimbolos["real"] = object: Lexema("real", "real", "float"){}
     tabelaSimbolos["lit"] = object: Lexema("lit", "lit", "lit"){}
 
     return tabelaSimbolos

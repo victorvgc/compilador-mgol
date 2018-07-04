@@ -58,7 +58,7 @@ class AnalisadorSemantico (val programaObjeto : File, val tabelaSimbolos : HashM
                             programBodyBuffer.append("scanf(\"%d\", &${params["id"]!!.lexema});\n")
                             Lexema(reducao, reducao)
                         }
-                        "double" -> {
+                        "float" -> {
                             programBodyBuffer.append("scanf(\"%lf\", &${params["id"]!!.lexema});\n")
                             Lexema(reducao, reducao)
                         }
@@ -67,7 +67,21 @@ class AnalisadorSemantico (val programaObjeto : File, val tabelaSimbolos : HashM
                 }
                 else {
                     programBodyBuffer.append(tabular())
-                    programBodyBuffer.append("printf(${params["ARG"]!!.lexema});\n")
+                    when (params["ARG"]!!.tipo) {
+                        "lit" -> {
+                            if (params["ARG"]!!.lexema.contains('"'))
+                                programBodyBuffer.append("printf(${params["ARG"]!!.lexema});\n")
+                            else
+                                programBodyBuffer.append("printf(\"%s\", ${params["ARG"]!!.lexema});\n")
+                        }
+                        "int" -> {
+                            programBodyBuffer.append("printf(\"%i\", ${params["ARG"]!!.lexema});\n")
+                        }
+                        "float" -> {
+                            programBodyBuffer.append("printf(\"%f\", ${params["ARG"]!!.lexema});\n")
+                        }
+                        else -> Lexema("ERRO SMT", "Variavel de tipo desconhecido")
+                    }
                     Lexema(reducao, reducao)
                 }
             }

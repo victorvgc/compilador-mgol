@@ -29,7 +29,7 @@ open class Lexema (estadoFinal: Int, open var lexema: String) {
             }
             4, 7 -> {
                 token = "num"
-                tipo = "double"
+                tipo = "float"
             }
             9 -> {
                 token = "literal"

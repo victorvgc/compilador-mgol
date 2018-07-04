@@ -2,4 +2,6 @@ inicio
     varinicio
         A int;
     varfim;
+
+    A <- A + 10;
 fim
